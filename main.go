@@ -57,18 +57,20 @@ func ValidateTokens(token_arr []string) {
 			os.Exit(0)
 		case "cd":
 			Change_dir(token_arr[1], argCount)
+		case "exec":
+			Exec()
 		default:
 			fmt.Println("Unknown command: ", token)
 	}
 }
 
 func Change_dir(dir string, argCount int) {
-	err := os.Chdir(dir)
-
 	if argCount != 1 {  // takes exactly one
 		fmt.Println("cd [dir-to-go]")
 		return
 	}
+
+	err := os.Chdir(dir)
 
 	if err != nil {
 		fmt.Println(err)
