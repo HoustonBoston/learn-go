@@ -10,6 +10,7 @@ import (
 	// "net/http"
 	// _ "net/http/pprof"
 	"os"
+	"syscall"
 	// "strconv"
 )
 
@@ -54,14 +55,24 @@ func ValidateTokens(token_arr []string) {
 
 	switch token {
 		case "exit": 
-			os.Exit(0)
+			Exit(argCount)
 		case "cd":
 			Change_dir(token_arr[1], argCount)
 		case "exec":
-			Exec()
+			path := token_arr[1]
+			Exec(path, token_arr[1:])
 		default:
 			fmt.Println("Unknown command: ", token)
 	}
+}
+
+func Exit(argCOunt int) {
+	if (argCOunt != 0) {
+		fmt.Println("Exit takes no arguments.")
+		return
+	}
+
+	os.Exit(0)
 }
 
 func Change_dir(dir string, argCount int) {
@@ -74,5 +85,13 @@ func Change_dir(dir string, argCount int) {
 
 	if err != nil {
 		fmt.Println(err)
+	}
+}
+
+func Exec(path string, args []string) {
+	execErr := syscall.Exec(path, args, os.Environ())
+
+	if execErr != nil {
+		fmt.Println("error when executing: ", execErr)
 	}
 }
